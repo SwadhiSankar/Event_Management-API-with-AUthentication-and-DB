@@ -4,11 +4,14 @@ import (
 	"net/http"
 
 	// "example.com/main/models"
+	"example.com/main.go/db"
 	"example.com/main.go/models"
 	"github.com/gin-gonic/gin"
 )
 
 func main(){
+	db.InitDB()
+
   server :=gin.Default()
 
   server.GET("/EVENTS",getEvents)  //GET, POST, PUT, PATCH, DELETE
