@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 
 	// "example.com/main/models"
 	"example.com/main.go/db"
@@ -15,7 +16,8 @@ func main(){
   server :=gin.Default()
 
   server.GET("/EVENTS",getEvents)  //GET, POST, PUT, PATCH, DELETE
-  server.POST("/events",createEvent)
+  server.GET("/events/:id",getEvent)// id is dynamic path 
+  server.POST("/events",createEvent) 
   server.Run(":8080") //starts listening incoming request
 }
 
@@ -28,6 +30,21 @@ func getEvents(context *gin.Context ) {
  context.JSON(http.StatusOK,events)
 }
 
+
+func getEvent(context *gin.Context){
+   eventId, err := strconv.ParseInt(context.Param("id"),10,64)  //10 decimal system //64 bit size
+   if err != nil{
+	context.JSON(http.StatusBadRequest,gin.H{"message": "Cannot able to parse event ID"})
+	return
+   }
+   event, err := models.GetEventById(eventId)
+   if err != nil{
+	context.JSON(http.StatusInternalServerError,gin.H{"message": "not able to fetch the event"})
+	return
+   }
+   context.JSON(http.StatusOK,event)
+
+}
 func createEvent(context *gin.Context){
  var event models.Event
 
