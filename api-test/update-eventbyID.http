@@ -1,0 +1,10 @@
+PUT http://localhost:8080/events/1
+Content-Type: application/json
+
+{
+    "name":"Balaji M",
+    "description": "Test event",
+    "location": "Coimbatore",
+    "dateTime": "2024-09-12T13:20:00Z"
+
+}
