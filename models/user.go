@@ -1,6 +1,9 @@
 package models
 
-import "example.com/main.go/db"
+import (
+	"example.com/main.go/db"
+	"example.com/main.go/utils"
+)
 
 type User struct {
 	ID       int64
@@ -16,8 +19,13 @@ func (u User)Save() error {
 	}
 
 	defer stmt.Close()
+    
+	hashedPassword, err := utils.HashPassword(u.Password)
+	if err != nil{
+		return err
+	}
 
-	result , err := stmt.Exec(u.Email,u.Password)
+	result , err := stmt.Exec(u.Email,hashedPassword)
 
 	if err != nil{
 		return err
@@ -27,6 +35,6 @@ func (u User)Save() error {
 
    u.ID= userId
    return err
-   
+
 
 }
