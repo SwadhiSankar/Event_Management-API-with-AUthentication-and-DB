@@ -8,4 +8,5 @@ func RegisterRoutes(server *gin.Engine) {
 	server.GET("/events/:id", getEvent) // id is dynamic path
 	server.POST("/events", createEvent)
 	server.PUT("/events/:id",updateEvent) //update req
+	server.DELETE("/events/:id",deleteEvent)
 }
