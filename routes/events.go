@@ -5,7 +5,7 @@ import (
 	"strconv"
 
 	"example.com/main.go/models"
-	
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -60,11 +60,19 @@ func updateEvent(context *gin.Context){
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Cannot able to parse event ID"})
 		return
 	}
-	_, err = models.GetEventById(eventId)
+	userId := context.GetInt64("userId")
+	event , err := models.GetEventById(eventId)
 	if err != nil{
 		context.JSON(http.StatusInternalServerError, gin.H{"message":"Could not fetch event"})
 		return
 	}
+    
+	if event.UserID != userId{
+		context.JSON(http.StatusUnauthorized, gin.H{"message":"Not authorize to update event"})
+		
+       return 
+	}
+
 	var updatedEvent models.Event
 	err = context.ShouldBindJSON(&updatedEvent)
 
@@ -89,11 +97,19 @@ func deleteEvent(context *gin.Context){
 		context.JSON(http.StatusBadRequest, gin.H{"message": "Cannot able to parse event ID"})
 		return
 	}
+
+	userId := context.GetInt64("userId")
 	event, err := models.GetEventById(eventId)
 	if err != nil{
 		context.JSON(http.StatusInternalServerError, gin.H{"message":"Could not fetch event"})
 		return
 	}
+	if event.UserID != userId{
+		context.JSON(http.StatusUnauthorized, gin.H{"message":"Not authorize to update event"})
+		
+       return 
+	}
+
 
 	err = event.Delete()
 
